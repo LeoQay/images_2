@@ -23,6 +23,35 @@ void bin_image(Image & image, unsigned char val)
 	}
 }
 
+void zero_borders(Image & image)
+{
+    auto ptr = image.data;
+    for (int64_t i = 0; i < image.shape[1]; i++)
+    {
+        ptr[i] = 0;
+    }
+
+    ptr = image.data + (image.shape[0] - 1) * image.shape[1];
+    for (int64_t i = 0; i < image.shape[1]; i++)
+    {
+        ptr[i] = 0;
+    }
+
+    ptr = image.data;
+    for (int64_t i = 0; i < image.shape[0]; i++)
+    {
+        *ptr = 0;
+        ptr += image.shape[1];
+    }
+
+    ptr = image.data + image.shape[1] - 1;
+    for (int64_t i = 0; i < image.shape[0]; i++)
+    {
+        *ptr = 0;
+        ptr += image.shape[1];
+    }
+}
+
 
 Image read_image(const char * filename)
 {
@@ -300,6 +329,8 @@ int main(int argc, char ** argv)
     Image image = read_image(argv[1]);
     
     bin_image(image, 1);
+
+    zero_borders(image);
 
     auto graphs = build_graphs(image);
 
